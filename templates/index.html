@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OneStopParallel</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <!-- Fixed‑top nav -->
+  <nav class="simple-nav fixed-top">
+    <ul>
+        <li>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#SchedulersModal">
+            Schedulers
+            </a>
+        </li>
+        <li>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#InputFormatModal">
+            Input Format
+            </a>
+        </li>
+        <li>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#DownloadModal">
+            Download
+          </a>
+        </li>
+        <li>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">
+            About
+            </a>
+        </li>
+    </ul>
+  </nav>
+
+  <!-- Push page down so content isn't hidden -->
+  <div style="padding-top:2.5rem;"></div>
+
+  <div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="form-container">
+            <h1>OneStopParallel</h1>
+
+            <div class="panel-wrapper">
+              <div class="left-container">
+                <form id="osp-form">
+                  <div class="form-control">
+                    <label>
+                      Input DAG File:
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Upload the input dag file. Supported formats: *.mtx, *.dot, *hdag</span>
+                      </span>
+                    </label>
+  
+                    <input type="file" id="inputDag" name="inputDag" required>
+                  </div>
+    
+                  <div class="form-control">
+                    <label>
+                      Input Machine File:
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Upload the input machine file</span>
+                      </span>
+                    </label>
+                    <input type="file" id="inputMachine" name="inputMachine" required> 
+                  </div>
+    
+                  <div class="form-control">
+                    <label>
+                      Time Limit (seconds):
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Maximum total execution time threshold</span>
+                      </span>
+                    </label>
+                    <input type="number" id="timeLimit" name="timeLimit" placeholder="Default: 60 seconds" min="0" max="600" step="1" />
+                  </div>
+
+                  <div class="dropdown sched-dropdown">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="multiSelectDropdown"
+                      data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #444;">
+                      Select Schedulers
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="multiSelectDropdown" id="scheduler-list"></ul>
+                  
+                    <!-- Plain text Need help? -->
+                    <button
+                      type="button"
+                      class="btn-help-text"
+                      data-bs-toggle="modal"
+                      data-bs-target="#SchedulerWizardModal">
+                      Need help?
+                    </button>
+                  </div>
+
+                  <button type="submit">Submit</button>
+                </form>
+                <div id="loading-spinner" class="loading-spinner"></div>
+                <div id="alert-message" class="alert" style="display: none;"></div>
+                <button id="download-button" style="display: none;">Download</button>
+              </div>
+    
+              <div class="right-container">
+                <div id="logs-container" class="log-section">
+                  <div id="table-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            // List of schedulers
+            const schedulers = [ "Serial" , "FullILP", "GreedyBsp", "BspLocking", "GrowLocal", "Variance", "Cilk", "Etf", "GrowLocalKL", "LockingKL", "FunnelLocking", "FunnelLockingKL"];
+            // Dynamically add scheduler checkboxes to the dropdown menu
+            const schedulerList = document.getElementById("scheduler-list");
+            schedulers.forEach(scheduler => {
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `<label><input type="checkbox" value="${scheduler}"> <span>${scheduler}</span></label>`;
+              schedulerList.appendChild(listItem);
+            });
+          </script>
+
+        <!-- (no inline scheduler script – handled in static/script.js) -->
+      <div class="col-lg-8">
+        <div id="logs-container" class="log-section d-none">
+          <div id="table-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="SchedulerWizardModal" tabindex="-1" aria-labelledby="SchedulerWizardLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="SchedulerWizardLabel">Scheduler Recommendation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Wizard container (same IDs your JS already uses) -->
+        <div id="scheduler-wizard" class="p-3 border rounded">
+          <div id="wizard-step"></div>
+          <div id="wizard-result" class="alert alert-info d-none"></div>
+
+          <div class="d-flex justify-content-between mt-3">
+            <button id="wizard-prev" type="button" class="btn btn-secondary btn-sm">Back</button>
+            <button id="wizard-next" type="button" class="btn btn-primary btn-sm">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="aboutModalLabel">About OneStopParallel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          OneStopParallel is an open-source toolkit developed by the Computing Systems Laboratory 
+          at the Zurich Research Center of Huawei Technologies Switzerland AG. It implements
+          a suite of advanced scheduling algorithms for parallel computing systems under the Bulk 
+          Synchronous Parallel (BSP) model, intelligently assigning tasks to processors while 
+          balancing computational load, respecting memory constraints, and minimizing 
+          communication overhead.
+          <p class="mt-3">
+            🔗 View the current source code on 
+            <a href="https://github.com/Algebraic-Programming/OneStopParallel" target="_blank" rel="noopener">
+              GitHub
+            </a>
+          </p>
+
+          <p class="mt-3">
+            📄 Related publications: <br> Papp et al.,
+            <a href="https://doi.org/10.1145/3626183.3659972" target="_blank" rel="noopener">
+              Efficient Multi-Processor Scheduling in Increasingly Realistic Models
+            </a>, SPAA 2024 <br>
+            Böhnlein et al.,
+            <a href="https://arxiv.org/abs/2503.05408" target="_blank" rel="noopener">
+              Efficient Parallel Scheduling for Sparse Triangular Solvers 
+            </a>, arXiv 2025
+          </p>
+          <hr>
+
+          <div class="mt-3">
+            <h6><strong>Contacts</strong></h6>
+            <ul class="list-unstyled mb-0">
+              <li>
+                Christos K. Matzoros, <a href="mailto:christos.konstantinos.matzoros@h-partners.com">
+                  christos.konstantinos.matzoros@h-partners.com
+                </a>
+              </li>
+              <li>
+                Toni Böhnlein, <a href="mailto:toni.boehnlein@huawei.com">
+                toni.boehnlein@huawei.com
+                </a>
+              </li>
+              <li>
+                Raphael S. Steiner, <a href="mailto:raphael.steiner@huawei.com">
+                raphael.steiner@huawei.com
+                </a>
+              </li>
+
+              <li>
+                Pál András Papp, <a href="mailto:pal.andras.papp@huawei.com">
+                  pal.andras.papp@huawei.com
+                </a>
+              </li>
+              <li>
+                A. N. Yzelman, <a href="mailto:albertjan.yzelman@huawei.com">
+                  albertjan.yzelman@huawei.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="InputFormatModal" tabindex="-1" aria-labelledby="InputFormatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="InputFormatModalLabel">Input Formats</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <strong>Input DAG File Formats</strong>
+          <p>
+            <code>.mtx</code>
+            <a href="https://math.nist.gov/MatrixMarket/formats.html#MMformat" target="_blank" rel="noopener">
+              Matrix Market format
+            </a> for sparse adjacency (should be lower triangular).<br>
+
+            <code>.dot</code>
+            <a href="https://graphviz.org/doc/info/lang.html" target="_blank" rel="noopener">
+              Graphviz DOT format
+            </a> for DAGs.<br>
+
+            <code>.hdag</code>
+            <a href="https://github.com/Algebraic-Programming/HyperDAG_DB/blob/main/FileFormat_README.md" target="_blank" rel="noopener">
+              HyperDAG format
+            </a>.<br>
+          </p>
+
+          <hr />
+          <strong>Input Machine File Format</strong><br>
+
+          <p class="mt-3"></p>
+            <a href="https://github.com/Algebraic-Programming/OneStopParallel/blob/master/data/machine_params/bsb_machine_file_format.md" target="_blank" rel="noopener">
+              Format explanation 
+            </a>
+            and 
+            <a href="https://github.com/Algebraic-Programming/OneStopParallel/blob/master/data/machine_params/p3.arch" target="_blank" rel="noopener">
+              example
+            </a>.
+          </p>  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="SchedulersModal" tabindex="-1" aria-labelledby="SchedulersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SchedulersModalLabel">Schedulers</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+          <div id="scheduler-descriptions"></div>
+
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download OSP Code Modal -->
+  <div class="modal fade" id="DownloadModal" tabindex="-1" aria-labelledby="DownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="DownloadModalLabel">Download OneStopParallel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-3">Get the latest OSP source code. Choose one of the options below:</p>
+
+          <div class="d-flex flex-column gap-3">
+            <!-- Direct ZIP download -->
+            <div>
+              <h6>Download ZIP</h6>
+              <p class="small text-muted">Grab a snapshot of the source.</p>
+              <a href="https://github.com/Algebraic-Programming/OneStopParallel/archive/refs/heads/master.zip" 
+                class="btn custom-red-btn w-100" download>
+                Download ZIP
+              </a>
+            </div>
+
+            <!-- Git clone instructions -->
+            <div>
+              <h6>Clone from GitHub</h6>
+              <p class="small text-muted mb-1">Use git to clone the repository:</p>
+              <pre style="background:#f4f4f4; padding:10px; border-radius:6px; font-size:0.9rem; overflow-x:auto;">
+git clone https://github.com/Algebraic-Programming/OneStopParallel.git</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

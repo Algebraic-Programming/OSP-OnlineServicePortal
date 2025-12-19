@@ -1,0 +1,706 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set default font and background color for the page */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  padding-top: 3rem; 
+}
+
+/* Style for main heading */
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.panel-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* left panel */
+.left-container {
+  flex: 0 0 25%;
+  min-width: 300px;
+}
+
+/* right panel */
+.right-container {
+  display: none;
+  flex: 1 1 70%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+/* Styling for the form container */
+.form-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+/* Logs section styling */
+.log-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow-x: scroll; /* Enable horizontal scrolling */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+/* Styling for log section headers */
+.log-section h4 {
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Styling for log content */
+.log-section pre {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: scroll;
+  word-wrap: break-word;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+  max-height: 200px; /* Set max height to avoid overflow */
+  overflow-y: scroll; /* Enable vertical scrolling */
+}
+
+/* Label styling */
+label {
+  font-weight: 500;
+  color: #444;
+  display: block;
+}
+
+/* Styling for form elements (inputs, select, buttons) */
+input,
+select,
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Button styling */
+button {
+  background-color: #C7000B;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #a3020a;
+}
+
+/* Button active state */
+button:active {
+  background-color: #C7000B;
+}
+
+/* Form control styling */
+.form-control {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjust font size for form elements */
+.form-control select,
+.form-control input[type="text"],
+.form-control input[type="number"] {
+  font-size: 1rem;
+}
+
+/* Alert message styling */
+.alert {
+  background-color: #f44336;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+  text-align: center;
+  display: none; /* Hidden by default */
+}
+
+/* Success alert styling */
+.success-alert {
+  background-color: #C7000B;
+}
+
+/* Loading spinner styling */
+.loading-spinner {
+  display: none; /* Hidden by default */
+  margin: 20px auto;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+/* Keyframes for loading spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  text-align: center; /* Align all text in the table center by default */
+}
+
+/* Table header styling */
+th {
+  background-color: #C7000B;
+  color: white;
+  text-align: center; /* Center align headers */
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Table row styling */
+td {
+  text-align: right; /* Align table data to the right */
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Alternate row background color */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Table row hover effect */
+tr:hover {
+  background-color: #b5b5b5;
+}
+/* Scrollable dropdown */
+.dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+  flex: 0 0 25%;
+  min-width: 300px;
+}
+.dropdown-menu label {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  line-height: 1.2;  /* tighter line spacing */
+  margin-bottom: 0;  /* remove extra gap */
+}
+
+/* Modern checkbox styling */
+.dropdown-menu input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2196F3; /* For modern browsers */
+}
+
+/* Better scrollbar visibility */
+.dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* Style the form-control container */
+.container {
+  margin-top: 50px;
+  max-width: 500px;
+}
+
+.download-btn {
+  padding: 5px 10px;
+  background-color: #C7000B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.download-btn:hover {
+  background-color: #C7000B;
+  transition: background-color 0.3s ease;
+}
+
+/* Center the button in the table cell */
+td {
+  text-align: center; /* Horizontally center the button */
+  vertical-align: middle; /* Vertically center the button */
+}
+
+/* Compact table cells */
+table th,
+table td {
+  /* shrink the top/bottom padding */
+  padding: 4px 8px;
+  /* slightly tighter text */
+  line-height: 1.2;
+}
+
+/* (optional) enforce a consistent row height */
+table tr {
+  height: 28px;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.tooltip-icon {
+  display: inline-block;
+  background-color: #888;
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: bold;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  background-color: #888;
+  color: #fff;
+  text-align: right;
+  padding: 6px 10px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 100%; /* Adjust this to raise/lower the tooltip */
+  left: 750%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.tooltip-wrapper:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.simple-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #C7000B;
+  /* increase the right padding from 1rem to 2rem (or whatever you like) */
+  padding: 0.5rem 2rem;  
+  z-index: 1000;
+}
+
+.simple-nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.75rem;
+  margin: 0;
+  /* add some padding at the end so the last link isn’t flush */
+  padding-right: 1rem;
+}
+
+.simple-nav a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.simple-nav a:hover {
+  color: #fff;
+}
+
+/* only hide the global error-alert by default */
+#alert-message {
+  display: none;
+}
+
+/* wizard container */
+#scheduler-wizard {
+  max-width: 100%;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  padding: 1.25rem; /* card-like spacing */
+}
+
+/* question box */
+#wizard-step {
+  background: #f9fafb;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+#wizard-step h6 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+#wizard-step > div {
+  display: flex;
+  align-items: center;
+}
+
+#wizard-step input[type="radio"] {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #007bff;
+}
+
+/* navigation buttons */
+#wizard-prev,
+#wizard-next {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  min-width: 100px;
+  transition: background-color .2s ease, filter .2s ease;
+  border: none;
+}
+
+/* Back button: muted gray */
+#wizard-prev {
+  background-color: #6c757d;
+  color: white;
+}
+#wizard-prev:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+#wizard-prev:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+/* Next / Finish button: blue primary */
+#wizard-next {
+  background-color: #C7000B;
+  color: white;
+}
+#wizard-next:hover:not(.restart) {
+  background-color: #C7000B;
+}
+#wizard-next:active {
+  filter: brightness(0.95);
+}
+
+/* Restart variant—force it */
+#wizard-next.restart {
+  background-color: #C7000B !important;
+  color: white;
+}
+#wizard-next.restart:hover {
+  background-color: #C7000B !important;
+}
+
+/* recommendation result box */
+#wizard-result.d-none {
+  display: none !important;
+}
+
+#wizard-result:not(.d-none) {
+  display: block;
+  border-radius: 6px;
+
+  background-color: #C7000B; /* red-orange to stand out */
+  color: white;
+  font-weight: 600;
+  margin-top: 0 !important;
+  position: relative;
+  /* optionally add a subtle shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#wizard-result strong {
+  margin-right: 6px;
+}
+  
+#toggle-wizard {
+  background: transparent;
+  color: #C7000B;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+#toggle-wizard:hover {
+    background: #C7000B;   /* brand color on hover */
+    color: #fff;           /* white text */
+}
+
+.custom-red-btn {
+    background: transparent;
+    border: 2px solid #C7000B;
+    color: #C7000B;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    text-align: center;  /* keep text centered */
+}
+
+.custom-red-btn:hover {
+    background: #C7000B;
+    border-color: #C7000B;
+    color: #fff;
+}
+
+a {
+  color: #C7000B;
+  font-weight: 500; /* optional, matches buttons' look */
+  text-decoration: none; /* optional: cleaner look */
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Links hover effect */
+a:hover {
+  color: #a3020a; /* slightly darker red on hover */
+  text-decoration: underline; /* optional: add underline on hover */
+}
+
+.reset-btn {
+  background-color: black !important;
+  color: white !important;
+  border: none;
+}
+
+/* tiny pill button */
+.btn-chip {
+  padding: .1rem .45rem;
+  font-size: .75rem;
+  line-height: 1;
+  border-radius: 999px;
+  border: white;
+}
+
+#wizard-result.rec-row {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;   /* ⬅️ center horizontally */
+  flex-wrap: nowrap;         /* keep on one line; change to 'wrap' if needed */
+  text-align: center !important;
+  padding: 1rem !important;             /* same inner padding as #wizard-step */
+  margin: 0 0 0 0 !important;       /* same vertical margins */
+}
+
+
+/* prevent mid-text wrapping */
+#wizard-result .rec-label,
+#wizard-result .rec-name {
+  white-space: nowrap;
+}
+
+/* pill Apply button */
+#wizard-result .btn-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .25rem .7rem;
+  height: 30px;
+  font-size: 1rem;
+  color: white;
+  line-height: 1;
+  border-radius: 9999px;
+  border: 1.5px solid #fff !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap;
+  border-width: 2px !important;   /* thicker border */
+}
+
+#wizard-result .btn-chip:hover,
+#wizard-result .btn-chip:focus {
+  background-color: #000 !important;
+  border-color: #000 !important;
+  border-width: 1px !important;   /* keep thickness on hover */
+  color: #fff !important;
+}
+
+/* keyboard accessibility */
+#wizard-result .btn-chip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#wizard-result .rec-label,
+#wizard-result .rec-name { white-space: nowrap; }
+
+/* small screens: wrap, put Apply underneath and centered */
+@media (max-width: 1000px) {
+  #wizard-result.rec-row { flex-wrap: wrap; }
+  #wizard-result .rec-label,
+  #wizard-result .rec-name { white-space: normal; } /* allow name to wrap if long */
+  #wizard-result .apply-wrap {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;  /* center the button */
+    margin-top: .5rem;        /* space above the button */
+  }
+}
+
+/* Clickable headers */
+th.sortable {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  /* space for arrow*/
+  padding-right: 12px;
+}
+
+/* 🔽 Arrow ALWAYS visible on sortable headers (default: light) */
+th.sortable::after {
+  content: '';
+  margin-left: 6px;
+  display: inline-block;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  /* default (inactive) = light UP arrow */
+  border-bottom: 7px solid rgba(255,255,255,0.75);
+  vertical-align: middle;
+}
+
+/* Active ASC = black UP arrow */
+th.sortable.sorted-asc::after {
+  border-top: 0;
+  border-bottom: 7px solid #000;   /* ▲ black */
+}
+
+/* Active DESC = black DOWN arrow */
+th.sortable.sorted-desc::after {
+  border-bottom: 0;
+  border-top: 7px solid #000;      /* ▼ black */
+}
+
+/* Hover polish */
+th.sortable:hover { filter: brightness(1.05); }
+
+#wizard-step,
+#wizard-result {
+  min-height: 210px; /* adjust this to match your tallest question */
+}
+
+
+
+#wizard-result {
+  border-radius: 6px;             /* match the rounded corners */
+  /* remove any extra top gap and match the same bottom gap */
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#wizard-result.mb-3 {
+  margin-bottom: 0.5rem !important;
+}
+
+.mb-2 {
+  margin: .4rem !important;
+  margin-bottom: .9rem !important;
+}
+
+.rec-chips {
+  max-width: 600px;      /* ← set your desired max width */
+  margin: 0 auto;        /* center horizontally */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Find Schedulers button — same base style as submit */
+.btn-find-schedulers {
+  background-color: #C7000B;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+/* Hover effect */
+.btn-find-schedulers:hover {
+  background-color: #a3020a;
+}
+
+/* Active state */
+.btn-find-schedulers:active {
+  background-color: #C7000B;
+}
+
+
+
+/* Remove global button styles for this one */
+.btn-help-text {
+  all: unset; /* reset all inherited styles */
+  position: absolute;
+  top: -1.2rem;
+  right: 8px;
+  color: #C7000B;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Keep pointer on hover but no style change */
+.btn-help-text:hover {
+  background-color: white;
+  color: #C7000B;
+}
+
+
+.sched-dropdown {
+  position: relative !important;
+  margin-top: 30px;
+}

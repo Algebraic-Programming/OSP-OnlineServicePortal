@@ -1,0 +1,71 @@
+{
+  "title": "OneStopParallel",
+  "fields": [
+    {
+      "type": "file",
+      "name": "inputDag",
+      "label": "Input DAG File",
+      "required": true
+    },
+    {
+      "type": "file",
+      "name": "inputMachine",
+      "label": "Input Machine File",
+      "required": true
+    },
+    {
+      "type": "number",
+      "name": "timeLimit",
+      "label": "Time Limit (seconds)",
+      "required": false,
+      "max": 600
+    },
+    {
+      "type": "checkbox",
+      "name": "sankey_enable",
+      "label": "Enable Sankey Schedule",
+      "checked": false
+    },
+    {
+      "type": "text",
+      "name": "sankey_file",
+      "label": "Sankey Filename",
+      "required": false,
+      "disabled": true
+    },
+    {
+      "type": "checkbox",
+      "name": "dot_enable",
+      "label": "Enable Dot Schedule",
+      "checked": false
+    },
+    {
+      "type": "text",
+      "name": "dot_file",
+      "label": "Dot Filename",
+      "required": false,
+      "disabled": true
+    },
+    {
+      "type": "select",
+      "name": "scheduler",
+      "label": "Scheduler",
+      "options": [
+        { "value": "Serial", "label": "Serial" },
+        { "value": "FullILP", "label": "FullILP" },
+        { "value": "GreedyBsp", "label": "GreedyBsp" },
+        { "value": "BspLocking", "label": "BspLocking" },
+        { "value": "GrowLocal", "label": "GrowLocal" },
+        { "value": "Variance", "label": "Variance" },
+        { "value": "Cilk", "label": "Cilk" },
+        { "value": "Etf", "label": "Etf" },
+        { "value": "GrowLocalKL", "label": "GrowLocalKL" },
+        { "value": "LockingKL", "label": "LockingKL" },
+        { "value": "FunnelLocking", "label": "FunnelLocking" },
+        { "value": "FunnelLockingKL", "label": "FunnelLockingKL" }
+      ],
+      "required": true,
+      "default": "Serial"
+    }
+  ]
+}

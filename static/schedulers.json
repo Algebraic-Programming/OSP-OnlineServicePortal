@@ -1,0 +1,133 @@
+{
+  "questions": [
+    {
+      "flag": "REDUCE_COMM",
+      "text": "Is reducing data movement a priority?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    },
+    {
+      "flag": "MIN_BARRIERS",
+      "text": "Do you want to minimize synchronizations even if it sacrifices some balance?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    },
+    {
+      "flag": "PRESERVE_LOCALITY",
+      "text": "Do you want to preserve locality even if it sacrifices aggressive balancing?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    },
+    {
+      "flag": "KL",
+      "text": "Would you like an extra refinement step (a local search algorithm)?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    },
+    {
+      "flag": "COARSEN",
+      "text": "Should the scheduler coarsen the DAG before scheduling?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    },
+    {
+      "flag": "ILP",
+      "text": "Do you need an optimal (ILP-based) solution?",
+      "options": ["Yes", "No", "Indifferent"],
+      "map": { "Yes": 1, "No": 0, "Indifferent": 2 }
+    }
+  ],
+  "schedulers": [
+    {
+      "value": "Serial",
+      "label": "Serial",
+      "desc": "Schedules all tasks serially on the same processor.",
+      "classic": true,
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 1, "PRESERVE_LOCALITY": 1, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "BspLocking",
+      "label": "BspLocking",
+      "classic": false,
+      "desc": "Barrier list scheduler; focuses on fewer synchronization barriers.",
+      "when": { "ILP": 0, "REDUCE_COMM": 0, "MIN_BARRIERS": 1, "PRESERVE_LOCALITY": 0, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "Variance",
+      "label": "Variance",
+      "classic": false,
+      "desc": "Barrier list scheduler; focuses on workload balance and uses static priorities.",
+      "when": { "ILP": 0, "REDUCE_COMM": 0, "MIN_BARRIERS": 0, "PRESERVE_LOCALITY": 0, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "GreedyBsp",
+      "label": "GreedyBsp",
+      "classic": false,
+      "desc": "Barrier list scheduler; reduces communication volume besides work balance.",
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 0, "PRESERVE_LOCALITY": 0, "KL": 0, "COARSEN": 0 }
+    },
+    {
+      "value": "GrowLocal",
+      "label": "GrowLocal",
+      "classic": false,
+      "desc": "Scheduling heuristic that focuses on work balance and preserves inherent locality.",
+      "when": { "ILP": 0, "REDUCE_COMM": 0, "MIN_BARRIERS": 1, "PRESERVE_LOCALITY": 1, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "FunnelLocking",
+      "label": "FunnelLocking",
+      "classic": false,
+      "desc": "Funnel coarsening + BspLocking scheduling.",
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 2, "PRESERVE_LOCALITY": 0, "KL": 0, "COARSEN": 1 }
+    },
+    {
+      "value": "FunnelLockingKL",
+      "label": "FunnelLockingKL",
+      "classic": false,
+      "desc": "Funnel coarsening + BspLocking + Kernighan-Lin refinement.",
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 2, "PRESERVE_LOCALITY": 0, "KL": 1, "COARSEN": 1 }
+    },
+    {
+      "value": "GrowLocalKL",
+      "label": "GrowLocalKL",
+      "classic": false,
+      "desc": "GrowLocal initialization with Kernighan-Lin local search improvement.",
+      "when": { "ILP": 0, "REDUCE_COMM": 2, "MIN_BARRIERS": 1, "PRESERVE_LOCALITY": 1, "KL": 1, "COARSEN": 0}
+    },
+    {
+      "value": "LockingKL",
+      "label": "LockingKL",
+      "classic": false,
+      "desc": "BspLocking initialization with Kernighan-Lin local search improvement.",
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 1, "PRESERVE_LOCALITY": 0, "KL": 1, "COARSEN": 0}
+    },
+    {
+      "value": "GreedyBspHC",
+      "label": "GreedyBspHC",
+      "classic": false,
+      "desc": "Initialization with GreedyBsp, then improvement by Hill Climbing local search.",
+      "when": { "ILP": 0, "REDUCE_COMM": 1, "MIN_BARRIERS": 0, "PRESERVE_LOCALITY": 0, "KL": 1, "COARSEN": 0}
+    },
+    {
+      "value": "Etf",
+      "label": "Etf",
+      "classic": true,
+      "desc": "The classic Earliest Time First scheduler.",
+      "when": { "ILP": 0, "REDUCE_COMM": 0, "MIN_BARRIERS": 0, "PRESERVE_LOCALITY": 0, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "Cilk",
+      "label": "Cilk",
+      "classic": true,
+      "desc": "The classic Cilk work-stealing scheduler.",
+      "when": { "ILP": 0, "REDUCE_COMM": 2, "MIN_BARRIERS": 0, "PRESERVE_LOCALITY": 1, "KL": 0, "COARSEN": 0}
+    },
+    {
+      "value": "FullILP",
+      "label": "FullILP",
+      "classic": false,
+      "desc": "Optimal BSP schedule via ILP (COPT), minimizing work, communication, and synchronization costs.",
+      "when": { "ILP": 1, "REDUCE_COMM": 2, "MIN_BARRIERS": 2, "PRESERVE_LOCALITY": 2, "KL": 2, "COARSEN": 2}
+    }
+  ]
+}
