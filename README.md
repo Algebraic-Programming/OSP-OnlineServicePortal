@@ -279,8 +279,7 @@ backend:app
 
 ## License
 
-This repository is licensed under the Apache License 2.0. See
-[LICENSE](/home/christos/Desktop/OSP-OnlineServicePortal/LICENSE).
+This repository is licensed under the Apache License 2.0.
 
 If you redistribute or deploy this project, also review the license terms of the
 upstream OneStopParallel dependency and any other bundled third-party components.
